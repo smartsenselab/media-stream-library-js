@@ -21,7 +21,6 @@ var H264Depay = /** @class */ (function (_super) {
     function H264Depay() {
         var _this = this;
         var h264PayloadType;
-        var prevNalType;
         var idrFound = false;
         // Incoming
         var buffer = Buffer.alloc(0);
@@ -31,10 +30,10 @@ var H264Depay = /** @class */ (function (_super) {
         var checkIdr = function (msg) {
             var rtpPayload = payload(msg.data);
             var nalType = rtpPayload[0] & 0x1f;
-            if ((nalType === 28 && prevNalType === 8) || (nalType === 5)) {
+            var fuNalType = rtpPayload[1] & 0x1f;
+            if ((nalType === 28 && fuNalType === 5) || (nalType === 5)) {
                 idrFound = true;
             }
-            prevNalType = nalType;
         };
         var incoming = new Transform({
             objectMode: true,
