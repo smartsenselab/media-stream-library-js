@@ -4,6 +4,8 @@ export interface GenericMessage {
   readonly type: MessageType
   readonly data: Buffer
   ntpTimestamp?: number
+  dvrTimestamp?: number
+  dvrFrameId?: number
 }
 
 export enum MessageType {

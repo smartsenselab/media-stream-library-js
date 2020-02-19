@@ -47,6 +47,9 @@ function h264depay(buffered, rtp, callback) {
             ]);
         }
         else if (stopBit) {
+            const extData = rtp_1.extHeader(rtp.data);
+            const dvrFrameId = extData.slice(9, 13).readInt32LE(0);
+            const dvrTimestamp = extData.slice(13, 21).readDoubleLE(0);
             /* receieved end bit */ const h264frame = Buffer.concat([
                 buffered,
                 rtpPayload.slice(2),
@@ -58,7 +61,9 @@ function h264depay(buffered, rtp, callback) {
                 timestamp: rtp_1.timestamp(rtp.data),
                 ntpTimestamp: rtp.ntpTimestamp,
                 payloadType: rtp_1.payloadType(rtp.data),
-                nalType: nalType,
+                nalType,
+                dvrFrameId,
+                dvrTimestamp
             };
             callback(msg);
             return Buffer.alloc(0);
@@ -70,6 +75,9 @@ function h264depay(buffered, rtp, callback) {
     }
     else if ((type === NAL_TYPES.NON_IDR_PICTURE || type === NAL_TYPES.IDR_PICTURE) &&
         buffered.length === 0) {
+        const extData = rtp_1.extHeader(rtp.data);
+        const dvrFrameId = extData.slice(9, 13).readInt32LE(0);
+        const dvrTimestamp = extData.slice(13, 21).readDoubleLE(0);
         /* Single NALU */ const h264frame = Buffer.concat([
             Buffer.from([0, 0, 0, 0]),
             rtpPayload,
@@ -82,6 +90,8 @@ function h264depay(buffered, rtp, callback) {
             ntpTimestamp: rtp.ntpTimestamp,
             payloadType: rtp_1.payloadType(rtp.data),
             nalType: type,
+            dvrFrameId,
+            dvrTimestamp
         };
         callback(msg);
         return Buffer.alloc(0);

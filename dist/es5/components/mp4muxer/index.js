@@ -60,7 +60,7 @@ var Mp4Muxer = /** @class */ (function (_super) {
                      * Otherwise we are getting some elementary stream data.
                      * Set up the moof and mdat boxes.
                      */
-                    var payloadType = msg.payloadType, timestamp = msg.timestamp, ntpTimestamp = msg.ntpTimestamp;
+                    var payloadType = msg.payloadType, timestamp = msg.timestamp, ntpTimestamp = msg.ntpTimestamp, dvrFrameId = msg.dvrFrameId, dvrTimestamp = msg.dvrTimestamp;
                     var trackId = boxBuilder.trackIdMap[payloadType];
                     if (trackId) {
                         if (!boxBuilder.ntpPresentationTime) {
@@ -92,6 +92,8 @@ var Mp4Muxer = /** @class */ (function (_super) {
                             mdat: mdat,
                             ntpTimestamp: ntpTimestamp,
                             checkpointTime: checkpointTime,
+                            dvrFrameId: dvrFrameId,
+                            dvrTimestamp: dvrTimestamp
                         });
                     }
                 }

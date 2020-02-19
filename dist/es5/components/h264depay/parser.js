@@ -1,5 +1,5 @@
 import { MessageType } from '../message';
-import { payload, timestamp, payloadType } from '../../utils/protocols/rtp';
+import { payload, timestamp, payloadType, extHeader } from '../../utils/protocols/rtp';
 import debug from 'debug';
 export var NAL_TYPES;
 (function (NAL_TYPES) {
@@ -42,6 +42,9 @@ export function h264depay(buffered, rtp, callback) {
             ]);
         }
         else if (stopBit) {
+            var extData = extHeader(rtp.data);
+            var dvrFrameId = extData.slice(9, 13).readInt32LE(0);
+            var dvrTimestamp = extData.slice(13, 21).readDoubleLE(0);
             /* receieved end bit */ var h264frame = Buffer.concat([
                 buffered,
                 rtpPayload.slice(2),
@@ -54,6 +57,8 @@ export function h264depay(buffered, rtp, callback) {
                 ntpTimestamp: rtp.ntpTimestamp,
                 payloadType: payloadType(rtp.data),
                 nalType: nalType,
+                dvrFrameId: dvrFrameId,
+                dvrTimestamp: dvrTimestamp
             };
             callback(msg);
             return Buffer.alloc(0);
@@ -65,6 +70,9 @@ export function h264depay(buffered, rtp, callback) {
     }
     else if ((type === NAL_TYPES.NON_IDR_PICTURE || type === NAL_TYPES.IDR_PICTURE) &&
         buffered.length === 0) {
+        var extData = extHeader(rtp.data);
+        var dvrFrameId = extData.slice(9, 13).readInt32LE(0);
+        var dvrTimestamp = extData.slice(13, 21).readDoubleLE(0);
         /* Single NALU */ var h264frame = Buffer.concat([
             Buffer.from([0, 0, 0, 0]),
             rtpPayload,
@@ -77,6 +85,8 @@ export function h264depay(buffered, rtp, callback) {
             ntpTimestamp: rtp.ntpTimestamp,
             payloadType: payloadType(rtp.data),
             nalType: type,
+            dvrFrameId: dvrFrameId,
+            dvrTimestamp: dvrTimestamp
         };
         callback(msg);
         return Buffer.alloc(0);
