@@ -67,6 +67,7 @@ class MseSink extends component_1.Sink {
                         sourceBuffer.appendBuffer(msg.data);
                     }
                     catch (e) {
+                        console.log(e);
                         // do nothing
                     }
                 }

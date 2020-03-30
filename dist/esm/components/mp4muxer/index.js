@@ -45,7 +45,7 @@ export class Mp4Muxer extends Tube {
                      * Otherwise we are getting some elementary stream data.
                      * Set up the moof and mdat boxes.
                      */
-                    const { payloadType, timestamp, ntpTimestamp } = msg;
+                    const { payloadType, timestamp, ntpTimestamp, dvrFrameId } = msg;
                     const trackId = boxBuilder.trackIdMap[payloadType];
                     if (trackId) {
                         if (!boxBuilder.ntpPresentationTime) {
@@ -77,6 +77,7 @@ export class Mp4Muxer extends Tube {
                             mdat,
                             ntpTimestamp,
                             checkpointTime,
+                            dvrFrameId
                         });
                     }
                 }

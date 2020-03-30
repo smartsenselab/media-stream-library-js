@@ -65,6 +65,7 @@ export class MseSink extends Sink {
                         sourceBuffer.appendBuffer(msg.data);
                     }
                     catch (e) {
+                        console.log(e);
                         // do nothing
                     }
                 }

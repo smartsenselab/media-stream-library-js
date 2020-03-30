@@ -12,4 +12,5 @@ __export(require("./html5-video-pipeline"));
 __export(require("./html5-video-metadata-pipeline"));
 __export(require("./metadata-pipeline"));
 __export(require("./ws-sdp-pipeline"));
+__export(require("./dvr-pipeline"));
 //# sourceMappingURL=index.browser.js.map

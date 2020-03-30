@@ -1,8 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const pipeline_1 = require("./pipeline");
+const mse_1 = require("../components/mse");
 const ws_source_1 = require("../components/ws-source");
-const elementary_parser_1 = require("../components/elementary-parser");
+const dvr_parser_1 = require("../components/dvr-parser");
+const mp4muxer_1 = require("../components/mp4muxer");
 class DvrPipeline extends pipeline_1.Pipeline {
     /**
      * Creates an instance of DvrPipeline.
@@ -11,15 +13,22 @@ class DvrPipeline extends pipeline_1.Pipeline {
      */
     constructor(config) {
         const { ws: wsConfig, mediaElement } = config;
-        const elementaryParser = new elementary_parser_1.ElementaryParser();
-        super(elementaryParser);
+        const dvrParser = new dvr_parser_1.DvrParser();
+        const mp4Muxer = new mp4muxer_1.Mp4Muxer();
+        mp4Muxer.onSync = ntpPresentationTime => {
+            this.onSync && this.onSync(ntpPresentationTime);
+        };
+        const mseSink = new mse_1.MseSink(mediaElement);
+        mseSink.onSourceOpen = (mse, tracks) => {
+            this.onSourceOpen && this.onSourceOpen(mse, tracks);
+        };
+        super(dvrParser, mp4Muxer, mseSink);
         const waitForWs = ws_source_1.WSSource.open(wsConfig);
         this.ready = waitForWs.then(wsSource => {
             wsSource.onServerClose = () => {
                 this.onServerClose && this.onServerClose();
             };
             this.prepend(wsSource);
-            this._src = wsSource;
         });
     }
 }

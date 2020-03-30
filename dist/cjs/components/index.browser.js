@@ -7,6 +7,7 @@ __export(require("./component"));
 __export(require("./aacdepay"));
 __export(require("./basicdepay"));
 __export(require("./canvas"));
+__export(require("./dvr-parser"));
 __export(require("./h264depay"));
 __export(require("./inspector"));
 __export(require("./jpegdepay"));

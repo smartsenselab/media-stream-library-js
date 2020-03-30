@@ -2,6 +2,7 @@ export * from './component';
 export * from './aacdepay';
 export * from './basicdepay';
 export * from './canvas';
+export * from './dvr-parser';
 export * from './h264depay';
 export * from './inspector';
 export * from './jpegdepay';

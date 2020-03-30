@@ -3,7 +3,7 @@ const START_CODE_LENGTH = 4
 const NON_IDR_PICTURE = 65
 const IDR_PICTURE = 104
 
-const matchesNaluType = (sequence: Buffer, naluType) => {
+const matchesNaluType = (sequence: Buffer, naluType: number) => {
   return (
     sequence[0] == 0 &&
     sequence[1] == 0 &&
@@ -13,7 +13,7 @@ const matchesNaluType = (sequence: Buffer, naluType) => {
   )
 }
 
-const indexOfNaluType = (buffer: Buffer, naluType) => {
+const indexOfNaluType = (buffer: Buffer, naluType: number) => {
   let offset = 0
 
   do {

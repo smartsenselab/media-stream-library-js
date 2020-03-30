@@ -8,8 +8,8 @@ export interface DvrConfig {
 export declare class DvrPipeline extends Pipeline {
     onSourceOpen?: (mse: MediaSource, tracks: MediaTrack[]) => void;
     onServerClose?: () => void;
+    onSync?: (ntpPresentationTime: number) => void;
     ready: Promise<void>;
-    private _src?;
     /**
      * Creates an instance of DvrPipeline.
      * @param {any} [config={}] Component options

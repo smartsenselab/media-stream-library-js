@@ -80,6 +80,7 @@ var MseSink = /** @class */ (function (_super) {
                         sourceBuffer.appendBuffer(msg.data);
                     }
                     catch (e) {
+                        console.log(e);
                         // do nothing
                     }
                 }

@@ -12,8 +12,10 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import { Pipeline } from './pipeline';
+import { MseSink } from '../components/mse';
 import { WSSource } from '../components/ws-source';
-import { ElementaryParser } from '../components/elementary-parser';
+import { DvrParser } from '../components/dvr-parser';
+import { Mp4Muxer } from '../components/mp4muxer';
 var DvrPipeline = /** @class */ (function (_super) {
     __extends(DvrPipeline, _super);
     /**
@@ -24,15 +26,22 @@ var DvrPipeline = /** @class */ (function (_super) {
     function DvrPipeline(config) {
         var _this = this;
         var wsConfig = config.ws, mediaElement = config.mediaElement;
-        var elementaryParser = new ElementaryParser();
-        _this = _super.call(this, elementaryParser) || this;
+        var dvrParser = new DvrParser();
+        var mp4Muxer = new Mp4Muxer();
+        mp4Muxer.onSync = function (ntpPresentationTime) {
+            _this.onSync && _this.onSync(ntpPresentationTime);
+        };
+        var mseSink = new MseSink(mediaElement);
+        mseSink.onSourceOpen = function (mse, tracks) {
+            _this.onSourceOpen && _this.onSourceOpen(mse, tracks);
+        };
+        _this = _super.call(this, dvrParser, mp4Muxer, mseSink) || this;
         var waitForWs = WSSource.open(wsConfig);
         _this.ready = waitForWs.then(function (wsSource) {
             wsSource.onServerClose = function () {
                 _this.onServerClose && _this.onServerClose();
             };
             _this.prepend(wsSource);
-            _this._src = wsSource;
         });
         return _this;
     }

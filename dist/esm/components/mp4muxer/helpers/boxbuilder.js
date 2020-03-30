@@ -132,7 +132,7 @@ export class BoxBuilder {
         // at some point. We can guard against the overflow by ORing with 0,
         // which will bring any difference back into signed 32-bit domain.
         const duration = trackData.lastTimestamp !== 0
-            ? (timestamp - trackData.lastTimestamp) | 0
+            ? Math.round(90 / (1 / (timestamp - trackData.lastTimestamp)))
             : trackData.defaultFrameDuration;
         trackData.lastTimestamp = timestamp;
         const moof = new Container('moof');
