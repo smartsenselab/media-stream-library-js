@@ -16,6 +16,8 @@ export class DvrPipeline extends Pipeline {
   public onSync?: (ntpPresentationTime: number) => void
   public ready: Promise<void>
 
+  private _sink: MseSink
+
   /**
    * Creates an instance of DvrPipeline.
    * @param {any} [config={}] Component options
@@ -41,6 +43,8 @@ export class DvrPipeline extends Pipeline {
 
     super(dvrParser, mp4Muxer, mseSink)
 
+    this._sink = mseSink
+
     const waitForWs = WSSource.open(wsConfig)
     this.ready = waitForWs.then(wsSource => {
       wsSource.onServerClose = () => {
@@ -48,5 +52,9 @@ export class DvrPipeline extends Pipeline {
       }
       this.prepend(wsSource)
     })    
+  }
+
+  get currentTime() {
+    return this._sink.currentTime
   }
 }

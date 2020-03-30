@@ -36,6 +36,7 @@ var DvrPipeline = /** @class */ (function (_super) {
             _this.onSourceOpen && _this.onSourceOpen(mse, tracks);
         };
         _this = _super.call(this, dvrParser, mp4Muxer, mseSink) || this;
+        _this._sink = mseSink;
         var waitForWs = WSSource.open(wsConfig);
         _this.ready = waitForWs.then(function (wsSource) {
             wsSource.onServerClose = function () {
@@ -45,6 +46,13 @@ var DvrPipeline = /** @class */ (function (_super) {
         });
         return _this;
     }
+    Object.defineProperty(DvrPipeline.prototype, "currentTime", {
+        get: function () {
+            return this._sink.currentTime;
+        },
+        enumerable: true,
+        configurable: true
+    });
     return DvrPipeline;
 }(Pipeline));
 export { DvrPipeline };

@@ -23,6 +23,7 @@ class DvrPipeline extends pipeline_1.Pipeline {
             this.onSourceOpen && this.onSourceOpen(mse, tracks);
         };
         super(dvrParser, mp4Muxer, mseSink);
+        this._sink = mseSink;
         const waitForWs = ws_source_1.WSSource.open(wsConfig);
         this.ready = waitForWs.then(wsSource => {
             wsSource.onServerClose = () => {
@@ -30,6 +31,9 @@ class DvrPipeline extends pipeline_1.Pipeline {
             };
             this.prepend(wsSource);
         });
+    }
+    get currentTime() {
+        return this._sink.currentTime;
     }
 }
 exports.DvrPipeline = DvrPipeline;
