@@ -43,9 +43,13 @@ var DvrPipeline = /** @class */ (function (_super) {
                 _this.onServerClose && _this.onServerClose();
             };
             _this.prepend(wsSource);
+            _this._src = wsSource;
         });
         return _this;
     }
+    DvrPipeline.prototype.close = function () {
+        this._src && this._src.outgoing.end();
+    };
     Object.defineProperty(DvrPipeline.prototype, "currentTime", {
         get: function () {
             return this._sink.currentTime;

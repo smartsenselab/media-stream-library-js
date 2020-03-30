@@ -16,6 +16,7 @@ export class DvrPipeline extends Pipeline {
   public onSync?: (ntpPresentationTime: number) => void
   public ready: Promise<void>
 
+  private _src?: WSSource
   private _sink: MseSink
 
   /**
@@ -51,7 +52,12 @@ export class DvrPipeline extends Pipeline {
         this.onServerClose && this.onServerClose()
       }
       this.prepend(wsSource)
+      this._src = wsSource
     })    
+  }
+
+  close() {
+    this._src && this._src.outgoing.end()
   }
 
   get currentTime() {

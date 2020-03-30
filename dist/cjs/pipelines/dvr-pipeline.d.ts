@@ -10,6 +10,7 @@ export declare class DvrPipeline extends Pipeline {
     onServerClose?: () => void;
     onSync?: (ntpPresentationTime: number) => void;
     ready: Promise<void>;
+    private _src?;
     private _sink;
     /**
      * Creates an instance of DvrPipeline.
@@ -17,5 +18,6 @@ export declare class DvrPipeline extends Pipeline {
      * @memberof DvrPipeline
      */
     constructor(config: DvrConfig);
+    close(): void;
     get currentTime(): number;
 }

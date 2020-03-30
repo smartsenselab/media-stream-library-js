@@ -28,7 +28,11 @@ export class DvrPipeline extends Pipeline {
                 this.onServerClose && this.onServerClose();
             };
             this.prepend(wsSource);
+            this._src = wsSource;
         });
+    }
+    close() {
+        this._src && this._src.outgoing.end();
     }
     get currentTime() {
         return this._sink.currentTime;
