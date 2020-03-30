@@ -86,6 +86,7 @@ export class MseSink extends Sink {
           try {
             sourceBuffer.appendBuffer(msg.data)
           } catch (e) {
+            console.log(e)
             // do nothing
           }
         } else if (msg.type === MessageType.RTCP) {

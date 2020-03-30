@@ -24,7 +24,7 @@ export class Mp4Muxer extends Tube {
     }
     const incoming = new Transform({
       objectMode: true,
-      transform: function (msg: Message, encoding, callback) {
+      transform: function(msg: Message, encoding, callback) {
         if (msg.type === MessageType.SDP) {
           /**
            * Arrival of SDP signals the beginning of a new movie.
@@ -54,7 +54,7 @@ export class Mp4Muxer extends Tube {
            * Set up the moof and mdat boxes.
            */
 
-          const { payloadType, timestamp, ntpTimestamp, dvrFrameId, dvrTimestamp } = msg
+          const { payloadType, timestamp, ntpTimestamp, dvrFrameId } = msg
           const trackId = boxBuilder.trackIdMap[payloadType]
 
           if (trackId) {
@@ -94,8 +94,7 @@ export class Mp4Muxer extends Tube {
               mdat,
               ntpTimestamp,
               checkpointTime,
-              dvrFrameId,
-              dvrTimestamp
+              dvrFrameId
             })
           }
         } else {

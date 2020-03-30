@@ -13,6 +13,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 import { Html5VideoPipeline } from './html5-video-pipeline';
 import { ONVIFDepay } from '../components/onvifdepay';
+import { MessageType } from '../components/message';
+import { Tube } from '../components/component';
 /**
  * Pipeline that can receive H264/AAC video over RTP
  * over WebSocket and pass it to a video element.
@@ -25,8 +27,14 @@ var Html5VideoMetadataPipeline = /** @class */ (function (_super) {
         var _this = this;
         var metadataHandler = config.metadataHandler;
         _this = _super.call(this, config) || this;
-        var onvifDepay = new ONVIFDepay(metadataHandler);
+        var onvifDepay = new ONVIFDepay();
         _this.insertAfter(_this.rtsp, onvifDepay);
+        var onvifHandlerPipe = Tube.fromHandlers(function (msg) {
+            if (msg.type === MessageType.XML) {
+                metadataHandler(msg);
+            }
+        }, undefined);
+        _this.insertAfter(onvifDepay, onvifHandlerPipe);
         return _this;
     }
     return Html5VideoMetadataPipeline;

@@ -3,7 +3,7 @@ import { Transform } from 'stream';
 import { MessageType } from '../message';
 import { payloadType, payload, marker, timestamp, } from '../../utils/protocols/rtp';
 export class ONVIFDepay extends Tube {
-    constructor(handler) {
+    constructor() {
         let XMLPayloadType;
         let packets = [];
         const incoming = new Transform({
@@ -38,16 +38,9 @@ export class ONVIFDepay extends Tube {
                             data: Buffer.concat(packets),
                             type: MessageType.XML,
                         };
-                        // If there is a handler, the XML message will leave
-                        // through the handler, otherwise send it on to the
-                        // next component
-                        if (handler) {
-                            handler(xmlMsg);
-                        }
-                        else {
-                            this.push(xmlMsg);
-                        }
+                        callback(undefined, xmlMsg);
                         packets = [];
+                        return;
                     }
                     callback();
                 }

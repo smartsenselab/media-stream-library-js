@@ -28,7 +28,7 @@ import { MessageType } from '../message';
 import { payloadType, payload, marker, timestamp, } from '../../utils/protocols/rtp';
 var ONVIFDepay = /** @class */ (function (_super) {
     __extends(ONVIFDepay, _super);
-    function ONVIFDepay(handler) {
+    function ONVIFDepay() {
         var _this = this;
         var XMLPayloadType;
         var packets = [];
@@ -75,16 +75,9 @@ var ONVIFDepay = /** @class */ (function (_super) {
                             data: Buffer.concat(packets),
                             type: MessageType.XML,
                         };
-                        // If there is a handler, the XML message will leave
-                        // through the handler, otherwise send it on to the
-                        // next component
-                        if (handler) {
-                            handler(xmlMsg);
-                        }
-                        else {
-                            this.push(xmlMsg);
-                        }
+                        callback(undefined, xmlMsg);
                         packets = [];
+                        return;
                     }
                     callback();
                 }

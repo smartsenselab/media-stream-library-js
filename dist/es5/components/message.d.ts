@@ -4,8 +4,6 @@ export interface GenericMessage {
     readonly type: MessageType;
     readonly data: Buffer;
     ntpTimestamp?: number;
-    dvrTimestamp?: number;
-    dvrFrameId?: number;
 }
 export declare enum MessageType {
     UNKNOWN = 0,
@@ -74,4 +72,4 @@ export interface JpegMessage extends GenericMessage {
     };
 }
 export declare type Message = RawMessage | RtpMessage | RtcpMessage | RtspMessage | SdpMessage | ElementaryMessage | H264Message | IsomMessage | XmlMessage | JpegMessage;
-export declare type MessageHandler = (msg: GenericMessage) => void;
+export declare type MessageHandler = (msg: Message) => void;

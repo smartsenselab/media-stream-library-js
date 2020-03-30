@@ -9,17 +9,8 @@ class H264Depay extends component_1.Tube {
     constructor() {
         let h264PayloadType;
         let idrFound = false;
+        const h264DepayParser = new parser_1.H264DepayParser();
         // Incoming
-        let buffer = Buffer.alloc(0);
-        let parseMessage = () => Buffer.alloc(0);
-        let checkIdr = (msg) => {
-            const rtpPayload = rtp_1.payload(msg.data);
-            const nalType = rtpPayload[0] & 0x1f;
-            const fuNalType = rtpPayload[1] & 0x1f;
-            if ((nalType === 28 && fuNalType === 5) || (nalType === 5)) {
-                idrFound = true;
-            }
-        };
         const incoming = new stream_1.Transform({
             objectMode: true,
             transform: function (msg, encoding, callback) {
@@ -37,13 +28,15 @@ class H264Depay extends component_1.Tube {
                 }
                 else if (msg.type === message_1.MessageType.RTP &&
                     rtp_1.payloadType(msg.data) === h264PayloadType) {
-                    if (!idrFound) {
-                        checkIdr(msg);
+                    const h264Message = h264DepayParser.parse(msg);
+                    // Skip if not a full H264 frame, or when there hasn't been an I-frame yet
+                    if (h264Message === null ||
+                        (!idrFound && h264Message.nalType !== parser_1.NAL_TYPES.IDR_PICTURE)) {
+                        callback();
+                        return;
                     }
-                    if (idrFound) {
-                        buffer = parseMessage(buffer, msg);
-                    }
-                    callback();
+                    idrFound = true;
+                    callback(undefined, h264Message);
                 }
                 else {
                     // Not a message we should handle
@@ -51,8 +44,6 @@ class H264Depay extends component_1.Tube {
                 }
             },
         });
-        const callback = incoming.push.bind(incoming);
-        parseMessage = (buffer, rtp) => parser_1.h264depay(buffer, rtp, callback);
         // outgoing will be defaulted to a PassThrough stream
         super(incoming);
     }

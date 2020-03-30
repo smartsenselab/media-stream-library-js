@@ -14,27 +14,16 @@ var __extends = (this && this.__extends) || (function () {
 import { Tube } from '../component';
 import { Transform } from 'stream';
 import { MessageType } from '../message';
-import { payload, payloadType } from '../../utils/protocols/rtp';
-import { h264depay } from './parser';
+import { payloadType } from '../../utils/protocols/rtp';
+import { H264DepayParser, NAL_TYPES } from './parser';
 var H264Depay = /** @class */ (function (_super) {
     __extends(H264Depay, _super);
     function H264Depay() {
         var _this = this;
         var h264PayloadType;
         var idrFound = false;
+        var h264DepayParser = new H264DepayParser();
         // Incoming
-        var buffer = Buffer.alloc(0);
-        var parseMessage = function () {
-            return Buffer.alloc(0);
-        };
-        var checkIdr = function (msg) {
-            var rtpPayload = payload(msg.data);
-            var nalType = rtpPayload[0] & 0x1f;
-            var fuNalType = rtpPayload[1] & 0x1f;
-            if ((nalType === 28 && fuNalType === 5) || (nalType === 5)) {
-                idrFound = true;
-            }
-        };
         var incoming = new Transform({
             objectMode: true,
             transform: function (msg, encoding, callback) {
@@ -52,13 +41,15 @@ var H264Depay = /** @class */ (function (_super) {
                 }
                 else if (msg.type === MessageType.RTP &&
                     payloadType(msg.data) === h264PayloadType) {
-                    if (!idrFound) {
-                        checkIdr(msg);
+                    var h264Message = h264DepayParser.parse(msg);
+                    // Skip if not a full H264 frame, or when there hasn't been an I-frame yet
+                    if (h264Message === null ||
+                        (!idrFound && h264Message.nalType !== NAL_TYPES.IDR_PICTURE)) {
+                        callback();
+                        return;
                     }
-                    if (idrFound) {
-                        buffer = parseMessage(buffer, msg);
-                    }
-                    callback();
+                    idrFound = true;
+                    callback(undefined, h264Message);
                 }
                 else {
                     // Not a message we should handle
@@ -66,8 +57,6 @@ var H264Depay = /** @class */ (function (_super) {
                 }
             },
         });
-        var callback = incoming.push.bind(incoming);
-        parseMessage = function (buffer, rtp) { return h264depay(buffer, rtp, callback); };
         // outgoing will be defaulted to a PassThrough stream
         _this = _super.call(this, incoming) || this;
         return _this;

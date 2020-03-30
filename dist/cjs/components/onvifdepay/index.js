@@ -5,7 +5,7 @@ const stream_1 = require("stream");
 const message_1 = require("../message");
 const rtp_1 = require("../../utils/protocols/rtp");
 class ONVIFDepay extends component_1.Tube {
-    constructor(handler) {
+    constructor() {
         let XMLPayloadType;
         let packets = [];
         const incoming = new stream_1.Transform({
@@ -40,16 +40,9 @@ class ONVIFDepay extends component_1.Tube {
                             data: Buffer.concat(packets),
                             type: message_1.MessageType.XML,
                         };
-                        // If there is a handler, the XML message will leave
-                        // through the handler, otherwise send it on to the
-                        // next component
-                        if (handler) {
-                            handler(xmlMsg);
-                        }
-                        else {
-                            this.push(xmlMsg);
-                        }
+                        callback(undefined, xmlMsg);
                         packets = [];
+                        return;
                     }
                     callback();
                 }

@@ -4,8 +4,7 @@ export interface GenericMessage {
   readonly type: MessageType
   readonly data: Buffer
   ntpTimestamp?: number
-  dvrTimestamp?: number
-  dvrFrameId?: number
+  readonly dvrFrameId?: number
 }
 
 export enum MessageType {
@@ -95,4 +94,4 @@ export type Message =
   | XmlMessage
   | JpegMessage
 
-export type MessageHandler = (msg: GenericMessage) => void
+export type MessageHandler = (msg: Message) => void

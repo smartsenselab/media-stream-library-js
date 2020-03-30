@@ -48,7 +48,7 @@ export declare class Source extends AbstractComponent {
     disconnect(): Component;
 }
 export declare class Tube extends Source {
-    static fromHandlers(fnIncoming: MessageHandler, fnOutgoing: MessageHandler): Tube;
+    static fromHandlers(fnIncoming: MessageHandler | undefined, fnOutgoing: MessageHandler | undefined): Tube;
     incoming: Duplex;
     outgoing: Duplex;
     constructor(incoming?: Duplex, outgoing?: Duplex);

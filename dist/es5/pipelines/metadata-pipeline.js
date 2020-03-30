@@ -14,6 +14,8 @@ var __extends = (this && this.__extends) || (function () {
 import { RtspPipeline } from './rtsp-pipeline';
 import { ONVIFDepay } from '../components/onvifdepay';
 import { WSSource } from '../components/ws-source';
+import { MessageType } from '../components/message';
+import { Sink } from '../components/component';
 // Default configuration for XML event stream
 var DEFAULT_RTSP_PARAMETERS = {
     parameters: ['audio=0', 'video=0', 'event=on', 'ptz=all'],
@@ -28,8 +30,14 @@ var MetadataPipeline = /** @class */ (function (_super) {
         var _this = this;
         var wsConfig = config.ws, rtspConfig = config.rtsp, metadataHandler = config.metadataHandler;
         _this = _super.call(this, Object.assign({}, DEFAULT_RTSP_PARAMETERS, rtspConfig)) || this;
-        var onvifDepay = new ONVIFDepay(metadataHandler);
+        var onvifDepay = new ONVIFDepay();
         _this.append(onvifDepay);
+        var handlerSink = Sink.fromHandler(function (msg) {
+            if (msg.type === MessageType.XML) {
+                metadataHandler(msg);
+            }
+        });
+        _this.append(handlerSink);
         var waitForWs = WSSource.open(wsConfig);
         _this.ready = waitForWs.then(function (wsSource) {
             wsSource.onServerClose = function () {

@@ -219,7 +219,7 @@ export class BoxBuilder {
     // which will bring any difference back into signed 32-bit domain.
     const duration =
       trackData.lastTimestamp !== 0
-        ? (timestamp - trackData.lastTimestamp) | 0
+        ? Math.round(90/(1/(timestamp - trackData.lastTimestamp)))
         : trackData.defaultFrameDuration
 
     trackData.lastTimestamp = timestamp

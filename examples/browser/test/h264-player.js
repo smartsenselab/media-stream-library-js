@@ -4,14 +4,12 @@ const play = host => {
   // Grab a reference to the video element
   const mediaElement = document.querySelector('video')
 
+  mediaElement.addEventListener('error',function(e){ console.error(e); })
+
   // Setup a new pipeline
-  const pipeline = new pipelines.Html5VideoPipeline({
-    ws: { uri: `ws://${host}:8854/` },
-    rtsp: { uri: `rtsp://localhost:8554/test` },
+  const pipeline = new pipelines.DvrPipeline({
+    ws: { uri: `ws://10.167.232.44:5001/` },
     mediaElement,
-  })
-  pipeline.ready.then(() => {
-    pipeline.rtsp.play()
   })
 }
 
