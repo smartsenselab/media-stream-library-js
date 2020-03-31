@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sdpMessage = {
+exports.sdpMessage = (encoderParams) => ({
     "media": [
         {
             "rtpmap": {
@@ -10,13 +10,10 @@ exports.sdpMessage = {
             },
             "type": "video",
             "fmtp": {
-                "parameters": {
-                    "profile-level-id": "4d0029",
-                    "sprop-parameter-sets": "Z00AKeKQDwBE/LgLcBAQGkHiRFQ=,aO48gA=="
-                }
+                "parameters": encoderParams
             },
             "framerate": 30
         }
     ]
-};
+});
 //# sourceMappingURL=sdp.js.map

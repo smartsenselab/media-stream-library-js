@@ -2,11 +2,12 @@ import { Pipeline } from './pipeline'
 import { WSConfig } from '../components/ws-source/openwebsocket'
 import { MseSink, MediaTrack } from '../components/mse'
 import { WSSource } from '../components/ws-source'
-import { DvrParser } from '../components/dvr-parser'
+import { DvrParser, EncoderParams } from '../components/dvr-parser'
 import { Mp4Muxer } from '../components/mp4muxer'
 
 export interface DvrConfig {
   ws: WSConfig
+  encoderParams: EncoderParams
   mediaElement: HTMLVideoElement
 }
 
@@ -27,10 +28,11 @@ export class DvrPipeline extends Pipeline {
   constructor(config: DvrConfig) {
     const {
       ws: wsConfig,
+      encoderParams,
       mediaElement
     } = config
 
-    const dvrParser = new DvrParser()
+    const dvrParser = new DvrParser(encoderParams)
     const mp4Muxer = new Mp4Muxer()
 
     mp4Muxer.onSync = ntpPresentationTime => {

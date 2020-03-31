@@ -1,4 +1,5 @@
-export declare const sdpMessage: {
+import { EncoderParams } from './index';
+export declare const sdpMessage: (encoderParams: EncoderParams) => {
     media: {
         rtpmap: {
             payloadType: number;
@@ -7,10 +8,7 @@ export declare const sdpMessage: {
         };
         type: string;
         fmtp: {
-            parameters: {
-                "profile-level-id": string;
-                "sprop-parameter-sets": string;
-            };
+            parameters: EncoderParams;
         };
         framerate: number;
     }[];

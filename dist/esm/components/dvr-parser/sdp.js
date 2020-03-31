@@ -1,4 +1,4 @@
-export const sdpMessage = {
+export const sdpMessage = (encoderParams) => ({
     "media": [
         {
             "rtpmap": {
@@ -8,13 +8,10 @@ export const sdpMessage = {
             },
             "type": "video",
             "fmtp": {
-                "parameters": {
-                    "profile-level-id": "4d0029",
-                    "sprop-parameter-sets": "Z00AKeKQDwBE/LgLcBAQGkHiRFQ=,aO48gA=="
-                }
+                "parameters": encoderParams
             },
             "framerate": 30
         }
     ]
-};
+});
 //# sourceMappingURL=sdp.js.map

@@ -1,8 +1,10 @@
 import { Pipeline } from './pipeline';
 import { WSConfig } from '../components/ws-source/openwebsocket';
 import { MediaTrack } from '../components/mse';
+import { EncoderParams } from '../components/dvr-parser';
 export interface DvrConfig {
     ws: WSConfig;
+    encoderParams: EncoderParams;
     mediaElement: HTMLVideoElement;
 }
 export declare class DvrPipeline extends Pipeline {

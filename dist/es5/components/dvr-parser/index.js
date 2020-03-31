@@ -28,7 +28,7 @@ var DvrParser = /** @class */ (function (_super) {
      * Create a new DVR parser component.
      * @return {undefined}
      */
-    function DvrParser() {
+    function DvrParser(encoderParams) {
         var _this = this;
         var sentSdp = false;
         var idrFound = false;
@@ -40,7 +40,7 @@ var DvrParser = /** @class */ (function (_super) {
                     incoming.push({
                         data: [],
                         type: MessageType.SDP,
-                        sdp: sdpMessage
+                        sdp: sdpMessage(encoderParams)
                     });
                     sentSdp = true;
                 }

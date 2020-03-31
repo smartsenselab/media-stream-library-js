@@ -12,8 +12,8 @@ class DvrPipeline extends pipeline_1.Pipeline {
      * @memberof DvrPipeline
      */
     constructor(config) {
-        const { ws: wsConfig, mediaElement } = config;
-        const dvrParser = new dvr_parser_1.DvrParser();
+        const { ws: wsConfig, encoderParams, mediaElement } = config;
+        const dvrParser = new dvr_parser_1.DvrParser(encoderParams);
         const mp4Muxer = new mp4muxer_1.Mp4Muxer();
         mp4Muxer.onSync = ntpPresentationTime => {
             this.onSync && this.onSync(ntpPresentationTime);

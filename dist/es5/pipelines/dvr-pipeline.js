@@ -25,8 +25,8 @@ var DvrPipeline = /** @class */ (function (_super) {
      */
     function DvrPipeline(config) {
         var _this = this;
-        var wsConfig = config.ws, mediaElement = config.mediaElement;
-        var dvrParser = new DvrParser();
+        var wsConfig = config.ws, encoderParams = config.encoderParams, mediaElement = config.mediaElement;
+        var dvrParser = new DvrParser(encoderParams);
         var mp4Muxer = new Mp4Muxer();
         mp4Muxer.onSync = function (ntpPresentationTime) {
             _this.onSync && _this.onSync(ntpPresentationTime);

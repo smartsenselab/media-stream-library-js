@@ -5,6 +5,11 @@ import { isKeyFrame, frameId, timestamp, payload } from '../../utils/protocols/d
 import { NAL_TYPES } from '../h264depay/parser'
 import { sdpMessage } from './sdp'
 
+export interface EncoderParams {
+  'profile-level-id': string
+  'sprop-parameter-sets': string
+}
+
 /**
  * A component that converts raw binary data into S3MS DVR packets 
  * on the incoming stream.
@@ -15,7 +20,7 @@ export class DvrParser extends Tube {
    * Create a new DVR parser component.
    * @return {undefined}
    */
-  constructor() {
+  constructor(encoderParams: EncoderParams) {
     let sentSdp = false
     let idrFound = false
 
@@ -27,7 +32,7 @@ export class DvrParser extends Tube {
           incoming.push({
             data: [],
             type: MessageType.SDP,
-            sdp: sdpMessage
+            sdp: sdpMessage(encoderParams)
           })
 
           sentSdp = true

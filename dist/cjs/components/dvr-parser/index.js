@@ -16,7 +16,7 @@ class DvrParser extends component_1.Tube {
      * Create a new DVR parser component.
      * @return {undefined}
      */
-    constructor() {
+    constructor(encoderParams) {
         let sentSdp = false;
         let idrFound = false;
         // Incoming stream
@@ -27,7 +27,7 @@ class DvrParser extends component_1.Tube {
                     incoming.push({
                         data: [],
                         type: message_1.MessageType.SDP,
-                        sdp: sdp_1.sdpMessage
+                        sdp: sdp_1.sdpMessage(encoderParams)
                     });
                     sentSdp = true;
                 }
